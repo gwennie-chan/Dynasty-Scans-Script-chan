@@ -5,6 +5,8 @@
 // @website      https://github.com/gwennie-chan/Dynasty-Scans-Script-chan
 // @supportURL   https://dynasty-scans.com/forum/topics/7297-dynasty-reader-userscripts
 // @version      0.1
+// @downloadURL  https://github.com/gwennie-chan/Dynasty-Scans-Script-chan/raw/master/Dynasty-Scans%20Script-chan.user.js
+// @updateURL    https://github.com/gwennie-chan/Dynasty-Scans-Script-chan/raw/master/Dynasty-Scans%20Script-chan.user.js
 // @description  Implements various userscripts for Dynasty-Scans.com into one neat package!
 // @author       Dynasty-Scans Scripters (Alice Cheshire, cyricc, gwennie-chan)
 // @include      https://dynasty-scans.com/*
@@ -14,6 +16,7 @@
 // @grant        GM_listValue
 // @grant        GM_deleteValue
 // @grant        GM_listValues
+// @grant        GM_getResourceText
 // @run-at       document-end
 // ==/UserScript==
 
