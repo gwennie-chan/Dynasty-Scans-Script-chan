@@ -161,6 +161,7 @@ function appendUIcss() {
         border-left: none;
         border-bottom: 1px solid rgb(0,51,102);
         border-radius: 0px 20px 10px 0px;
+        font-variant: small-caps;
     }
     #thingifier-magnifier-settings-menu {
         display: none;
@@ -260,6 +261,7 @@ function appendUIcss() {
         background-color: white;
         border-radius: 7px;
         display: inline-block;
+        font-variant: inherit;
     }
     #scmenu button:hover, #sc-mag-bar button:hover {
         background-color: azure;
