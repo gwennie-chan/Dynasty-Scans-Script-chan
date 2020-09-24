@@ -12,38 +12,47 @@
 // @include      https://dynasty-scans.com/*
 // @exclude      https://dynasty-scans.com/system/*
 // @exclude      https://dynasty.scans.com/*.jsons
+// @grant        GM_info
 // @run-at       document-end
+// @require      https://raw.githubusercontent.com/jeresig/jquery.hotkeys/master/jquery.hotkeys.js
 // ==/UserScript==
 
 //---Global Variables and Objects---
 const tagsJSON = "https://dynasty-scans.com/tags.json";
 const tagURLstub = "https://dynasty-scans.com/tags/";
 const currentURL = window.location.pathname;
-let SCd = {
-    yourid: "Not set!",
-    spoilers: false,
+let SCdefault = {
     navbar: false,
     pagination: false,
+    yourid: "Not set!",
+    markread: false,
+    taghider: false,
+    fontsize: 0,
+    spoilers: false,
     bbcode: false,
     quote2quickreply: false,
     movequickreply: false,
+    forumtagger: false,
+    statsshortener: false,
+    galleryviewer: false,
     magnifier: false,
-    fontsize: 0,
-    mag: {
-        sizeRes: "512",
+    magsettings: {
+        sizeRes: "250",
         sizeMeasure: "px",
-        minSizeRes: "512",
+        minSizeRes: "250",
         minSizeMeasure: "px",
         zoomFactor: "250",
         border: "0"
     },
-    ver: "0"
+    sspswitcher: false,
+    mangadex: false,
+    rethingify: false,
+    mousewheel: false,
 };
-var SC = getItem("SC", SCd), ver = "0.1";
-
-console.log(`Script-chan Version: ${SC.ver} `);
-
-if (SC.ver !== ver) {SC.ver = ver;}
+var SC = getItem("SC", SCdefault);
+var meta = GM_info;
+console.log(`Script-chan Version: ${meta.script.version} `);
+console.log(SC);
 
 function getItem(key, def) {
     let out = localStorage.getItem(key);
@@ -109,9 +118,9 @@ function initUI(){
     </div>`);
     $('body').append(`
         <div id="sc-mag-bar" class="unselectable">
-            <b title="Script-chan Magnifier">&#128269;</b>
-            <li><button type="button" id="thingifier-magnifier-control" title="Click or Press 'Z' To ENABLE Magnifier"><span class="sc-icon">&#128505;</span><span class="sc-label">Turn On</span></button></li>
             <li><button type="button" id="thingifier-magnifier-settings-button" title="Click to OPEN Magnifier Settings"><span class="sc-icon">&#9881;</span><span class="sc-label">Open Settings</span></button></li>
+            <li><button type="button" id="thingifier-magnifier-control" title="Click or Press 'Z' To ENABLE Magnifier"><span class="sc-icon">&#128505;</span><span class="sc-label">Turn On</span></button></li>
+            <b title="Script-chan Magnifier">&#128269;</b>
         </div>
         <div id="thingifier-magnifier-settings-menu">
             <h3>Magnifier Settings</h3>
@@ -138,11 +147,11 @@ function appendUIcss() {
         width:300px;
         padding-bottom:10px;
         position:fixed;
-        display:block;
+        display:none; /* hidden by default */
         right:20px;
         top:50px;
         z-index:2;
-        background-color:rgba(0, 51, 102, 0.8);
+        background-color:rgba(0, 51, 102, 0.9);
         border:2px solid rgb(0,51,102);
         border-radius:5px;
         box-shadow: 1px 1px 8px rgb(0,51,102);
@@ -152,11 +161,12 @@ function appendUIcss() {
     }
     #sc-mag-bar {
         position: fixed;
+        display: none; /* hidden by default */
         bottom: 0px;
         left: 0px;
         z-index: 3;
         padding: 5px 10px;
-        background-color:rgba(0, 51, 102, 0.5);
+        background-color:rgba(0, 51, 102, 0.9);
         border:2px solid rgb(0,51,102);
         border-left: none;
         border-bottom: 1px solid rgb(0,51,102);
@@ -171,7 +181,7 @@ function appendUIcss() {
         left: 10px;
         bottom: 50px;
         text-align: center;
-        background-color:rgba(0, 51, 102, 0.8);
+        background-color:rgba(0, 51, 102, 0.9);
         border:2px solid rgb(0,51,102);
         border-radius:5px;
         box-shadow: 1px 1px 8px rgb(0,51,102);
@@ -367,6 +377,8 @@ function appendUIcss() {
 
 </style>`);
 }
+//Load Settings
+
 
 //Magnifier Bar Controller
 $('#thingifier-magnifier-control').click(function(){
@@ -399,6 +411,7 @@ $('#thingifier-magnifier-settings-button').click(function(){
         $('#thingifier-magnifier-settings-menu').slideUp();
     }
 });
+
 
 
 //Alice Cheshire - Title Rethingifier
