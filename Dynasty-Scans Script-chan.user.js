@@ -24,11 +24,11 @@ const currentURL = window.location.pathname;
 let SCdefault = {
     navbar: false,
     pagination: false,
-    yourid: "Not set!",
     markread: false,
     taghider: false,
     fontsize: 0,
     spoilers: false,
+    yourid: "Not set!",
     bbcode: false,
     quote2quickreply: false,
     movequickreply: false,
@@ -63,6 +63,10 @@ function getItem(key, def) {
 function setItem(key, val) {
     if (typeof val === "object") { val = JSON.stringify(val);}
     localStorage.setItem(key,val);
+}
+
+function save() {
+    setItem("SC",SC);
 }
 
 //Main Function
@@ -131,6 +135,7 @@ function initUI(){
             <div id="magnifier-setting-buttons"><input type="button" id="magnifier-menu-submit" value="Save"><input type="button" id="magnifier-menu-cancel" value="Cancel"></div>
         </div>
     `);
+    settingsChecker();
 }
 
 function appendUIcss() {
@@ -377,8 +382,42 @@ function appendUIcss() {
 
 </style>`);
 }
-//Load Settings
+SC.magnifier = true;
+save();
 
+//Load Settings into UI
+function settingsChecker (){
+    if(SC.navbar == false){
+        $('#thingifier-fixed-navbar').prop('checked', false);
+    }
+    else if(SC.navbar == true){
+        $('#thingifier-fixed-navbar').prop('checked', true);
+    }
+    if(SC.pagination == false){
+        $('#thingifier-pagination').prop('checked', false);
+    }
+    else if(SC.pagination == true){
+        $('#thingifier-pagination').prop('checked', true);
+    }
+    if(SC.markread == false){
+        $('#cyricc-mark-read').prop('checked', false);
+    }
+    else if(SC.markread == true){
+        $('#cyricc-mark-read').prop('checked', true);
+    }
+    if(SC.taghider == false){
+        $('#cyricc-tag-hider').prop('checked', false);
+    }
+    else if(SC.taghider == true){
+        $('#cyricc-tag-hider').prop('checked', true);
+    }
+    if(SC.magnifier == false){
+        $('#thingifier-magnifier').prop('checked', false);
+    }
+    else if(SC.magnifier == true){
+        $('#thingifier-magnifier').prop('checked', true);
+    }
+}
 
 //Magnifier Bar Controller
 $('#thingifier-magnifier-control').click(function(){
