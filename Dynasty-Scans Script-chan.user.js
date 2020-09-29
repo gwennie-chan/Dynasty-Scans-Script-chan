@@ -64,6 +64,8 @@ let SCdefault = {
     mousewheel: false,
 };
 
+Object.freeze(SCdefault);
+
 function getItem(key, def) {
     let out = localStorage.getItem(key);
     if (out === null) { return def; }
@@ -137,7 +139,6 @@ function initUI() {
                 <li><input type="checkbox" id="thingifier-pagination"><label for="thingifier-pagination" title="Adds A Page Selector To The Top Near Navbar">Top Page Selector</label></li>
                 <li><input type="checkbox" id="cyricc-mark-read"><label for="cyricc-mark-read" title="Greys Out Already-Read Titles">Mark Read</label></li>
                 <li><input type="checkbox" id="cyricc-tag-hider"><label for="cyricc-tag-hider" title="Hides User-Selected Tags From Appearing In Tag List">Tag Hider</label></li>
-                <li><span title="Changes Forum Font Size">Font Size&nbsp;&nbsp;</span><input type="range" id="thingifier-font-size" min="1" max="5"><span id="thingifier-font-size-value" style="padding:0px 5px">(00px)</span><button type="button" id="thingifier-reset-font" style="margin-left:10px" title="Resets Font Size Change"Mom>Reset</button></li>
             <h4 title="For Stanning Your OT3">Forum Tweaks</h4>
                 <li><input type="checkbox" id="thingifier-unhide-spoilers"><label for="thingifier-unhide-spoilers" title="Unhides Forum Spoilers">Unhide Spoilers</label></li>
                 <li><a target="_blank" id="ownposts-link"><button type="button" id="thingifier-ownposts" style="position: relative; left: 40px; top: -5px;" disabled>Your Posts</button></a></li>
@@ -146,6 +147,7 @@ function initUI() {
                 <li><input type="checkbox" id="thingifier-quote-move-quickreply"><label for="thingifier-quote-move-quickreply" title="Moves Quick Reply On Forum Page Under Post Being Quoted">QR Below Post</label></li>
                 <li><input type="checkbox" id="gc-forum-tagger"><label for="gc-forum-tagger" title="Automatically Linkifies Valid Tags On Forum and Image Comments">Forum Tagger</label></li>
                 <li><input type="checkbox" id="gc-stats-shortener"><label for="gc-stats-shortener" title="Abbreviates Forum Directory Stats">Stats Shortner</label></li>
+                <li><span title="Changes Forum Font Size">Font Size&nbsp;&nbsp;</span><input type="range" id="thingifier-font-size" min="1" max="5"><span id="thingifier-font-size-value" style="padding:0px 5px">(00px)</span><button type="button" id="thingifier-reset-font" style="margin-left:10px" title="Resets Font Size Change"Mom>Reset</button></li>
             <h4 title="For Being A Perverted Baka #Ironic #Cringe">Gallery Tweaks</h4>
                 <li><input type="checkbox" id="cyricc-gallery-viewer"><label for="cyricc-gallery-viewer" title="Enables Easy, High-Res Gallery Viewing From Main Images Page">Gallery Viewer</label></li>
                 <li><input type="checkbox" id="thingifier-magnifier"><label for="thingifier" title="Magnifies Content On The Site">Magnifier</label></li>
