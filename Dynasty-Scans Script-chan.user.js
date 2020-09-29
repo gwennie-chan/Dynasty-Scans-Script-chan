@@ -21,12 +21,20 @@
 const tagsJSON = "https://dynasty-scans.com/tags.json";
 const tagURLstub = "https://dynasty-scans.com/tags/";
 const currentURL = window.location.pathname;
+const originalTitle = document.title;
 let SCdefault = {
     navbar: false,
     pagination: false,
     markread: false,
     taghider: false,
-    fontsize: 0,
+    fontsize: "normal",
+    fontset: {
+        smallest: {fs:"10px",lh:"12px"},
+        smaller: {fs:"12px",lh:"15px"},
+        normal: {fs:"16px",lh:"19px"},
+        bigger: {fs:"20px",lh:"23px"},
+        biggest: {fs:"25px",lh:"28px"}
+    },
     spoilers: false,
     yourid: "Not set!",
     bbcode: false,
@@ -42,7 +50,7 @@ let SCdefault = {
         minSizeRes: "250",
         minSizeMeasure: "px",
         zoomFactor: "250",
-        border: "0"
+        shape: "circle"
     },
     sspswitcher: false,
     mangadex: false,
@@ -50,7 +58,9 @@ let SCdefault = {
     mousewheel: false,
 };
 var SC = getItem("SC", SCdefault);
+save();
 var meta = GM_info;
+var SCfs = SC.fontsize;
 console.log(`Script-chan Version: ${meta.script.version} `);
 console.log(SC);
 
@@ -128,14 +138,14 @@ function initUI(){
         </div>
         <div id="thingifier-magnifier-settings-menu">
             <h3>Magnifier Settings</h3>
-            <li><label for="sizenum">Size</label><input type="number" max="750" min="5" value="250" id="sizenum"><select name="sizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px" selected>px</option></select></li>
-            <li><label for="minsizenum">Min. Size</label><input type="number" max="750" min="5" value="250" id="minsizenum"><select name="minsizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px" selected>px</option></select>
-            <li><label for="zoomfactor">Zoom Factor (%)</label><input type="number" id="zoomfactor" max="500" min="50" value="250" placeholder="Number As %"></li>
-            <li><label for="magnifier-shape">Mag. Shape</label><select name="magnifier-shape"><option value="circle" selected>Circle</option><option value="square">Square</option></select></li>
+            <li><label for="sizenum">Size</label><input type="number" max="750" min="5" id="sizenum"><select name="sizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px">px</option></select></li>
+            <li><label for="minsizenum">Min. Size</label><input type="number" max="750" min="5" id="minsizenum"><select name="minsizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px">px</option></select>
+            <li><label for="zoomfactor">Zoom Factor (%)</label><input type="number" id="zoomfactor" max="500" min="50" placeholder="Number As %"></li>
+            <li><label for="magnifier-shape">Mag. Shape</label><select name="magnifier-shape"><option value="circle">Circle</option><option value="square">Square</option></select></li>
             <div id="magnifier-setting-buttons"><input type="button" id="magnifier-menu-submit" value="Save"><input type="button" id="magnifier-menu-cancel" value="Cancel"></div>
         </div>
     `);
-    settingsChecker();
+    settingsChecker("all");
 }
 
 function appendUIcss() {
@@ -382,42 +392,375 @@ function appendUIcss() {
 
 </style>`);
 }
-SC.magnifier = true;
-save();
 
 //Load Settings into UI
-function settingsChecker (){
-    if(SC.navbar == false){
-        $('#thingifier-fixed-navbar').prop('checked', false);
+function settingsChecker (what){
+    if(what == "navbar" || what == "all") {
+        if(SC.navbar == false){
+            $('#thingifier-fixed-navbar').prop('checked', false);
+        }
+        else if(SC.navbar == true){
+            $('#thingifier-fixed-navbar').prop('checked', true);
+        }
     }
-    else if(SC.navbar == true){
-        $('#thingifier-fixed-navbar').prop('checked', true);
+    if(what == "pagination" || what == "all") {
+        if(SC.pagination == false){
+            $('#thingifier-pagination').prop('checked', false);
+        }
+        else if(SC.pagination == true){
+            $('#thingifier-pagination').prop('checked', true);
+        }
     }
-    if(SC.pagination == false){
-        $('#thingifier-pagination').prop('checked', false);
+    if(what == "mark-read" || what == "all") {
+        if(SC.markread == false){
+            $('#cyricc-mark-read').prop('checked', false);
+        }
+        else if(SC.markread == true){
+            $('#cyricc-mark-read').prop('checked', true);
+        }
     }
-    else if(SC.pagination == true){
-        $('#thingifier-pagination').prop('checked', true);
+    if(what == "tag-hider" || what == "all") {
+        if(SC.taghider == false){
+            $('#cyricc-tag-hider').prop('checked', false);
+        }
+        else if(SC.taghider == true){
+            $('#cyricc-tag-hider').prop('checked', true);
+        }
     }
-    if(SC.markread == false){
-        $('#cyricc-mark-read').prop('checked', false);
+    if(what == "fontsize" || what == "all") {
+        if(SC.fontsize == SCdefault.fontsize){
+            $('#thingifier-reset-font').prop('disabled', true).prop('title',"Default Font Size - Reset Unnecessary");
+        }
+        else {
+            $('#thingifier-reset-font').prop('disabled', false).prop('title',"Click To Reset To Default Font Size");
+        }
+        $('#thingifier-font-size').prop('value',fontset(SC.fontsize,"index"));
+        $('#thingifier-font-size-value').html(`(${fontset(SC.fontsize,"value")})`);
     }
-    else if(SC.markread == true){
-        $('#cyricc-mark-read').prop('checked', true);
+    if(what == "spoilers" || what == "all") {
+        if(SC.spoilers == false){
+            $('#thingifier-unhide-spoilers').prop('checked', false);
+        }
+        else if(SC.spoilers == true){
+            $('#thingifier-unhide-spoilers').prop('checked', true);
+        }
     }
-    if(SC.taghider == false){
-        $('#cyricc-tag-hider').prop('checked', false);
+    if(what == "yourid" || what == "all") {
+        if(SC.yourid == "Not set!"){
+            $('#thingifier-ownposts').prop('disabled',true);
+        }
+        else if(SC.yourid){
+            $('#thingifier-ownposts').prop('disabled', false);
+        }
     }
-    else if(SC.taghider == true){
-        $('#cyricc-tag-hider').prop('checked', true);
+    if(what == "bbcode" || what == "all") {
+        if(SC.bbcode == false){
+            $('#thingifier-bbcode-buttons').prop('checked', false);
+        }
+        else if(SC.bbcode == true){
+            $('#thingifier-bbcode-buttons').prop('checked', true);
+        }
     }
-    if(SC.magnifier == false){
-        $('#thingifier-magnifier').prop('checked', false);
+    if(what == "quote2quickreply" || what == "all") {
+        if(SC.quote2quickreply == false){
+            $('#thingifier-quote-to-quickreply').prop('checked', false);
+        }
+        else if(SC.quote2quickreply == true){
+            $('#thingifier-quote-to-quickreply').prop('checked', true);
+        }
     }
-    else if(SC.magnifier == true){
-        $('#thingifier-magnifier').prop('checked', true);
+    if(what == "movequickreply" || what == "all") {
+        if(SC.movequickreply == false){
+            $('#thingifier-quote-move-quickreply').prop('checked', false);
+        }
+        else if(SC.movequickreply == true){
+            $('#thingifier-quote-move-quickreply').prop('checked', true);
+        }
+    }
+    if(what == "forumtagger" || what == "all") {
+        if(SC.forumtagger == false){
+            $('#gc-forum-tagger').prop('checked', false);
+        }
+        else if(SC.forumtagger == true){
+            $('#gc-forum-tagger').prop('checked', true);
+        }
+    }
+    if(what == "statsshortener" || what == "all") {
+        if(SC.statsshortener == false){
+            $('#gc-stats-shortener').prop('checked', false);
+        }
+        else if(SC.statsshortener == true){
+            $('#gc-stats-shortener').prop('checked', true);
+        }
+    }
+    if(what == "galleryviewer" || what == "all") {
+        if(SC.galleryviewer == false){
+            $('#cyricc-gallery-viewer').prop('checked', false);
+        }
+        else if(SC.galleryviewer == true){
+            $('#cyricc-gallery-viewer').prop('checked', true);
+        }
+    }
+    if(what == "magnifier" || what == "all") {
+        if(SC.magnifier == false){
+            $('#thingifier-magnifier').prop('checked', false);
+        }
+        else if(SC.magnifier == true){
+            $('#thingifier-magnifier').prop('checked', true);
+        }
+        if(!SC.magsettings.sizeRes == null) {$('#sizenum').prop('value',SC.magsettings.sizeRes);}
+        if(!SC.magsettings.sizeMeasure == null) {
+            if(SC.magsettings.sizeMeasure == "vh") {$('select[name="sizemeasure"] option[value="vh"]').prop('selected',true);}
+            else if (SC.magsettings.sizeMeasure == "vw") {$('select[name="sizemeasure"] option[value="vw"]').prop('selected',true);}
+            else if (SC.magsettings.sizeMeasure == "vmin") {$('select[name="sizemeasure"] option[value="vmin"]').prop('selected',true);}
+            else if (SC.magsettings.sizeMeasure == "vmax") {$('select[name="sizemeasure"] option[value="vmax"]').prop('selected',true);}
+            else if (SC.magsettings.sizeMeasure == "%") {$('select[name="sizemeasure"] option[value="%"]').prop('selected',true);}
+            else if (SC.magsettings.sizeMeasure == "px") {$('select[name="sizemeasure"] option[value="px"]').prop('selected',true);}
+        }
+        if(!SC.magsettings.minSizeRes == null) {$('#minsizenum').prop('value',SC.magsettings.minSizeRes);}
+        if(!SC.magsettings.minSizeMeasure == null) {
+            if(SC.magsettings.minSizeMeasure == "vh") {$('select[name="minsizemeasure"] option[value="vh"]').prop('selected',true);}
+            else if (SC.magsettings.minSizeMeasure == "vw") {$('select[name="minsizemeasure"] option[value="vw"]').prop('selected',true);}
+            else if (SC.magsettings.minSizeMeasure == "vmin") {$('select[name="minsizemeasure"] option[value="vmin"]').prop('selected',true);}
+            else if (SC.magsettings.minSizeMeasure == "vmax") {$('select[name="minsizemeasure"] option[value="vmax"]').prop('selected',true);}
+            else if (SC.magsettings.minSizeMeasure == "%") {$('select[name="minsizemeasure"] option[value="%"]').prop('selected',true);}
+            else if (SC.magsettings.minSizeMeasure == "px") {$('select[name="minsizemeasure"] option[value="px"]').prop('selected',true);}
+        }
+        if(!SC.magsettings.zoomFactor == null) {$('#zoomfactor').prop('value',SC.magsettings.zoomFactor);}
+        if(!SC.magsettings.shape == null) {
+            if(SC.magsettings.shape == "circle") {$('select[name="magnifier-shape"] option[value="circle"]').prop('selected', true);}
+            else if (SC.magsettings.shape == "square") {$('select[name="magnifier-shape"] option[value="square"]').prop('selected', true);}
+        }
+    }
+    if(what == "sspswitcher" || what == "all") {
+        if(SC.sspswitcher == false){
+            $('#gc-tss').prop('checked', false);
+        }
+        else if(SC.sspswitcher == true){
+            $('#gc-tss').prop('checked', true);
+        }
+    }
+    if(what == "mangadex" || what == "all") {
+        if(SC.mangadex == false){
+            $('#thingifier-mangadex').prop('checked', false);
+        }
+        else if(SC.mangadex == true){
+            $('#thingifier-mangadex').prop('checked', true);
+        }
+    }
+    if(what == "rethingify" || what == "all") {
+        if(SC.rethingify == false){
+            $('#thingifier-rething').prop('checked', false);
+        }
+        else if(SC.rethingify == true){
+            $('#thingifier-rething').prop('checked', true);
+        }
+    }
+    if(what == "mousewheel" || what == "all") {
+        if(SC.mousewheel == false){
+            $('#thingifier-mousewheel').prop('checked', false);
+        }
+        else if(SC.mousewheel == true){
+            $('#thingifier-mousewheel').prop('checked', true);
+        }
     }
 }
+
+//Set LocalStorage Object Based on UI Selections
+$('#thingifier-fixed-navbar').click(function(){
+    if($(this).prop('checked') == false){
+        SC.navbar = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.navbar = true;
+        save();
+    }
+});
+$('#thingifier-pagination').click(function(){
+    if($(this).prop('checked') == false){
+        SC.pagination = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.pagination = true;
+        save();
+    }
+});
+$('#cyricc-mark-read').click(function(){
+    if($(this).prop('checked') == false){
+        SC.markread = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.markread = true;
+        save();
+    }
+});
+$('#cyricc-tag-hider').click(function(){
+    if($(this).prop('checked') == false){
+        SC.taghider = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.taghider = true;
+        save();
+    }
+});
+$('#thingifier-font-size').change(function(){
+    SC.fontsize = fontset($(this).val(),"name");
+    save();
+    settingsChecker("fontsize");
+});
+$('#thingifier-reset-font').click(function(){
+    if($(this).prop('disabled') == false) {
+        SC.fontsize = SCdefault.fontsize;
+        save();
+        $('#thingifier-font-size').prop('value','3');
+        $('#thingifier-font-size-value').html(`(${SC.fontsize}px)`);
+        $(this).prop('disabled', true);
+        settingsChecker("fontsize");
+    }
+});
+$('#thingifier-unhide-spoilers').click(function(){
+    if($(this).prop('checked') == false){
+        SC.spoilers = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.spoilers = true;
+        save();
+    }
+});
+//OWNPOSTS NEEDS DONE
+$('#thingifier-bbcode-buttons').click(function(){
+    if($(this).prop('checked') == false){
+        SC.bbcode = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.bbcode = true;
+        save();
+    }
+});
+$('#thingifier-quote-to-quickreply').click(function(){
+    if($(this).prop('checked') == false){
+        SC.quote2quickreply = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.quote2quickreply = true;
+        save();
+    }
+});
+$('#thingifier-quote-move-quickreply').click(function(){
+    if($(this).prop('checked') == false){
+        SC.movequickreply = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.movequickreply = true;
+        save();
+    }
+});
+$('#gc-forum-tagger').click(function(){
+    if($(this).prop('checked') == false){
+        SC.forumtagger = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.forumtagger = true;
+        save();
+    }
+});
+$('#gc-stats-shortener').click(function(){
+    if($(this).prop('checked') == false){
+        SC.statsshortener = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.statsshortener = true;
+        save();
+    }
+});
+$('#cyricc-gallery-viewer').click(function(){
+    if($(this).prop('checked') == false){
+        SC.galleryviewer = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.galleryviewer = true;
+        save();
+    }
+});
+$('#thingifier-magnifier').click(function(){
+    if($(this).prop('checked') == false){
+        SC.magnifier = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.magnifier = true;
+        save();
+    }
+});
+$('#magnifier-menu-submit').click(function(){
+    SC.magsettings.sizeRes = $('#sizenum').val();
+    SC.magsettings.sizeMeasure = $('select[name="sizemeasure"]').val();
+    SC.magsettings.minSizeRes = $('#minsizenum').val();
+    SC.magsettings.minSizeMeasure = $('select[name="minsizemeasure"]').val();
+    SC.magsettings.zoomFactor = $('#zoomfactor').val();
+    SC.magsettings.shape = $('select[name="magnifier-shape"]').val();
+    save();
+});
+$('#magnifier-menu-cancel').click(function(){
+    $('#sizenum').val(SC.magsettings.sizeRes);
+    $('select[name="sizemeasure"]').val(SC.magsettings.sizeMeasure);
+    $('#minsizenum').val(SC.magsettings.minSizeRes);
+    $('select[name="minsizemeasure"]').val(SC.magsettings.minSizeMeasure);
+    $('#zoomfactor').val(SC.magsettings.zoomFactor);
+    $('select[name="magnifier-shape"]').val(SC.magsettings.shape);
+});
+$('#gc-tss').click(function(){
+    if($(this).prop('checked') == false){
+        SC.sspswitcher = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.sspswitcher = true;
+        save();
+    }
+});
+$('#thingifier-mangadex').click(function(){
+    if($(this).prop('checked') == false){
+        SC.mangadex = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.mangadex = true;
+        save();
+    }
+});
+$('#thingifier-rething').click(function(){
+    if($(this).prop('checked') == false){
+        SC.rethingify = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.rethingify = true;
+        save();
+    }
+});
+$('#thingifier-mousewheel').click(function(){
+    if($(this).prop('checked') == false){
+        SC.mousewheel = false;
+        save();
+    }
+    else if ($(this).prop('checked') == true) {
+        SC.mousewheel = true;
+        save();
+    }
+});
+
 
 //Magnifier Bar Controller
 $('#thingifier-magnifier-control').click(function(){
@@ -451,7 +794,30 @@ $('#thingifier-magnifier-settings-button').click(function(){
     }
 });
 
-
+//UI Helper Functions
+function fontset (set, type) {
+    if(type == "index") {
+        if(set == "smallest"){return 1;}
+        else if (set == "smaller"){return 2;}
+        else if (set == "normal"){return 3;}
+        else if (set == "bigger"){return 4;}
+        else if (set == "biggest"){return 5;}
+    }
+    else if (type == "value") {
+        if(set == "smallest" || set == 1){return SC.fontset.smallest.fs;}
+        else if (set == "smaller" || set == 2){return SC.fontset.smaller.fs;}
+        else if (set == "normal" || set == 3){return SC.fontset.normal.fs;}
+        else if (set == "bigger" || set == 4){return SC.fontset.bigger.fs;}
+        else if (set == "biggest" || set == 5){return SC.fontset.biggest.fs;}
+    }
+    else if (type == "name") {
+        if(set == 1){return "smallest";}
+        else if (set == 2){return "smaller";}
+        else if (set == 3){return "normal";}
+        else if (set == 4){return "bigger";}
+        else if (set == 5){return "biggest";}
+    }
+}
 
 //Alice Cheshire - Title Rethingifier
 function rethingify() {
