@@ -11,7 +11,25 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
 - [x] Implement Basic UI Functionality
 - [x] Implement LocalStorage For Setting Storage
 - [ ] Backend Coding
-- [ ] Debugging and Beta Testing
+  - [ ] Fixed Navbar
+  - [ ] Pagination
+  - [ ] Mark Read
+  - [ ] Tag Hider
+  - [ ] Unhide Spoilers
+  - [x] Your Posts
+  - [ ] Quick Reply Editor
+  - [ ] Quote to Quick Reply
+  - [ ] Move Quick Reply
+  - [ ] Forum Tagger
+  - [ ] Stats Shortener
+  - [ ] Font Size
+  - [ ] Gallery Viewer
+  - [ ] Magnifier
+  - [x] SSP - Tag Selection Switcher
+  - [x] Mangadex Searcher (Completely Rewritten)
+  - [x] Browser Title Rethingifier
+  - [ ] Mousewheel Clicker
+- [ ] Debugging, Cross-Browser and Beta Testing
 - [ ] Release First Stable Version
 
 ## Changelog :new:
@@ -58,7 +76,7 @@ These tweaks improve or ease viewing of graphic-heavy parts of the site.
 
 #### Gallery Viewer _(cyricc)_
 > Allows browsing high-resolution images from the top-level Images section page. Metadata included.
-#### Magnifier _(Alice)_
+#### Magnifier _(Alice)_ (UI rewritten for Script-chan)
 > Creates a software-based, customizable magnifying lens on the site, allowing for easier viewing of small text, low-resolution images, and graphics.
 
 ### Miscellaneous Tweaks :symbols:
@@ -66,7 +84,7 @@ These tweaks provide minor cosmetic changes or obscure enhancements.
 
 #### Suggestions Status Page - Tag Selection Switcher _(gwennie)_
 > Allows for quick and easy filtering of your suggested tag changes on the Suggestions Status page by accepted, rejected, and/or pending suggestions.
-#### MangaDex Searcher _(Alice)_
+#### MangaDex Searcher _(Alice and gwennie)_ (UI and backend rewritten for Script-chan)
 > Adds tool near work titles to search for work title or work author on [MangaDex](https://mangadex.org/).
 #### Browser Title Rethingifier _(Alice)_
 > Reverses browser title format to list what work/page is being viewed first, instead of the website name.
