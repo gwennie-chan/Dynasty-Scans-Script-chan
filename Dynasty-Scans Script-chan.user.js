@@ -268,7 +268,7 @@ function appendUIcss() {
     #magnifier-setting-buttons input {
         margin: 0 6px;
     }
-    #scmenu h1, #scmenu h2, #scmenu h3, #scmenu h4, #scmenu h5, #sc-mag-bar h3, #thingifier-magnifier-settings-menu h3 {
+    #scmenu h1, #scmenu h2, #scmenu h3, #scmenu h4, #scmenu h5, #sc-mag-bar h3, #thingifier-magnifier-settings-menu h3, #mangadex-tool h2 {
         font-weight: bold;
         font-family: 'Courier Prime', monospace;
         background-color: rgba(255,255,255,0.2);
@@ -328,6 +328,61 @@ function appendUIcss() {
     #scmenu input[type=range] {
         max-width: 95px;
     }
+    .tagified:hover {
+        text-decoration:underline;
+        color:#990000;
+    }
+    #tss-bar {
+        text-align:center;
+        font-size:0.75em;
+        font-weight:normal;
+    }
+    #tss-bar input {
+        margin: 10px 20px;
+        display:inline-block;
+    }
+    #mangadex-tool {
+        background-color:rgba(0, 51, 102, 0.9);
+        border:2px solid rgb(0,51,102);
+        box-shadow: 1px 1px 8px rgb(0,51,102);
+        color:white;
+        display: inline-block;
+        font-variant:small-caps;
+        font-size: 12px;
+        border-radius: 12px;
+        margin: 10px;
+    }
+    #mangadex-tool h2 {
+        display: inline-block;
+        font-weight: normal;
+        font-size: 16px;
+        padding: 0px 8px;
+        margin: 4px;
+        border-radius: 10px;
+    }
+    #mangadex-tool a {
+        color: black;
+        text-decoration: none;
+        padding: 0px 8px;
+        border-radius: 10px;
+        border: none;
+        background-color: white;
+        display: inline-block;
+        font-variant: inherit;
+        margin: 0px 4px;
+    }
+    #mangadex-tool a:hover {
+        text-decoration: none;
+        background-color: lightblue;
+    }
+    #mangadex-tool a small {
+        text-transform: uppercase;
+        display: inherit;
+        font-size: 10px;
+        color: grey;
+        margin: 2px 0px 3px 4px
+    }
+
 
     /*Range Styling from http://danielstern.ca/range.css/*/
     input[type=range] {
@@ -587,15 +642,19 @@ function settingsChecker(what, initial = false) {
     if (what === 'sspswitcher' || what === 'all') {
         if (SC.sspswitcher === false) {
             $('#gc-tss').prop('checked', false);
+            tssUI(false);
         } else if (SC.sspswitcher === true) {
             $('#gc-tss').prop('checked', true);
+            tssUI(true);
         }
     }
     if (what === 'mangadex' || what === 'all') {
         if (SC.mangadex === false) {
             $('#thingifier-mangadex').prop('checked', false);
+            mangadex(false);
         } else if (SC.mangadex === true) {
             $('#thingifier-mangadex').prop('checked', true);
+            mangadex(true);
         }
     }
     if (what === 'rethingify' || what === 'all') {
@@ -614,7 +673,7 @@ function settingsChecker(what, initial = false) {
     }
 }
 
-//Set LocalStorage Object Based on UI Selections
+//UI Menu Handlers
 $('#thingifier-fixed-navbar').click(function () {
     if ($(this).prop('checked') === false) {
         SC.navbar = false;
@@ -676,9 +735,6 @@ $('#thingifier-unhide-spoilers').click(function () {
         save();
     }
 });
-
-//OWNPOSTS NEEDS DONE
-
 $('#thingifier-bbcode-buttons').click(function () {
     if ($(this).prop('checked') === false) {
         SC.bbcode = false;
@@ -783,27 +839,33 @@ $('#gc-tss').click(function () {
     if ($(this).prop('checked') === false) {
         SC.sspswitcher = false;
         save();
+        tssUI(false);
     } else if ($(this).prop('checked') === true) {
         SC.sspswitcher = true;
         save();
+        tssUI(true);
     }
 });
 $('#thingifier-mangadex').click(function () {
     if ($(this).prop('checked') === false) {
         SC.mangadex = false;
         save();
+        mangadex(false);
     } else if ($(this).prop('checked') === true) {
         SC.mangadex = true;
         save();
+        mangadex(true);
     }
 });
 $('#thingifier-rething').click(function () {
     if ($(this).prop('checked') === false) {
         SC.rethingify = false;
         save();
+        rethingify(false);
     } else if ($(this).prop('checked') === true) {
         SC.rethingify = true;
         save();
+        rethingify(true);
     }
 });
 $('#thingifier-mousewheel').click(function () {
@@ -848,10 +910,34 @@ $('#thingifier-magnifier-settings-button').click(function () {
 });
 function magClick (){
     if (SC.magnifier === true) {
-        console.log("Mag Click!");
+        //console.log("Mag Click!");
         $('#thingifier-magnifier-control').click();
     }
 }
+
+//TSS Bar Controller
+$('#acceptedCont').click(function() {
+    if ($(this).is(':checked')) {
+        $('.suggestion-accepted').fadeIn();
+    }
+    else {
+        $('.suggestion-accepted').fadeOut();
+    }});
+$('#pendingCont').click(function() {
+    if ($(this).is(':checked')) {
+        $('.suggestion-pending').fadeIn();
+    }
+    else {
+        $('.suggestion-pending').fadeOut();
+    }});
+$('#rejectedCont').click(function() {
+    if ($(this).is(':checked')) {
+        $('.suggestion-rejected').fadeIn();
+    }
+    else {
+        $('.suggestion-rejected').fadeOut();
+    }});
+
 
 //UI Helper Functions
 function fontset (set, type) {
@@ -879,9 +965,112 @@ function fontset (set, type) {
 }
 
 //Alice Cheshire - Title Rethingifier
-function rethingify() {
-    document.title = document.title.replace(/Dynasty Reader »(.+)/, '$1 | Dynasty Reader');
+function rethingify(set) {
+    if (set === true){
+        document.title = document.title.replace(/Dynasty Reader »(.+)/, '$1 | Dynasty Reader');
+    }
+    else if (set === false) {
+        document.title = originalTitle;
+    }
 }
+
+//Alice Cheshire and gwennie-chan - MangaDex Searcher
+function mangadex(set) {
+    if (cURL.match(/(chapters\/)(?!added).*/) || cURL.match(/(series\/.*)/) || cURL.match(/(issues\/.*)/) || cURL.match(/(anthologies\/.*)/)) {
+        if (set === true) {
+            let title, authors, select;
+            title = getWorkInfo("title");
+            //console.log(title);
+            authors = getWorkInfo("author");
+            //console.log(authors);
+
+            if(cURL.match(/(chapters\/)(?!added).*/)) {
+                select = '#chapter-title';
+            }
+            else {
+                select = '.tag-title';
+            }
+
+            $(`<div id="mangadex-tool" style="display: none">
+                    <h2>Mangadex Search Tool:</h2>
+                    <a id="mangadex-title" href="https://mangadex.org/search?title=${title}">Title</a>
+               </div>`).appendTo(select);
+
+            if(Array.isArray(authors)) {
+                for (let i = 0; i < authors.length; i++) {
+                    $(`<a class="md-author" href="https://mangadex.org/search?author=${authors[i]}">Author ${i+1}<small>(${authors[i]})</small></a>`).appendTo('#mangadex-tool');
+                }
+            }
+            else {
+                $(`<a class="md-author" href="https://mangadex.org/search?author=${authors}">Author<small>(${authors})</small></a>`).appendTo('#mangadex-tool');
+            }
+
+            $('#mangadex-tool').show();
+        }
+        else if (set === false) {
+            $('#mangadex-tool').slideUp('slow','linear',function(){$(this).remove();});
+        }
+    }
+}
+
+function getWorkInfo(what) {
+    function getAuthors(discrim = null) {
+        let selector;
+        let tempArray = [];
+        if (discrim === 'chapters') {
+            selector = $('#chapter-title > a');
+        }
+        else {
+            selector = $('.tag-title > a');
+        }
+        if(selector.length === 1) {
+            return selector.text();
+        }
+        else if (selector.length > 1) {
+            selector.each(function(){
+                tempArray.push($(this).text());
+            });
+            return tempArray;
+        }
+    }
+
+    function getTitle(discrim = null) {
+        if (discrim === 'chapters'){
+            if(!document.querySelector('#chapter-title b a')) {
+                return $('#chapter-title b').text();
+            }
+            else {
+                return $('#chapter-title b a').text();
+            }
+        }
+        else {
+            if(!document.querySelector('.tag-title b a')) {
+                return $('.tag-title b').text();
+            }
+            else {
+                return $('.tag-title b a').text();
+            }
+        }
+    }
+
+    if (cURL.match(/chapters/)) {
+        if(what === "title") {return getTitle('chapters');}
+        if(what === "author") {return getAuthors('chapters');}
+    }
+    else if (cURL.match(/series/)) {
+        if(what === "title") {return getTitle();}
+        if(what === "author") {return getAuthors();}
+    }
+    else if (cURL.match(/issues/)) {
+        if(what === "title") {return getTitle();}
+        if(what === "author") {return null;}
+    }
+    else if (cURL.match(/anthologies/)) {
+        if(what === "title") {return getTitle();}
+        if(what === "author") {return null;}
+    }
+}
+
 
 //gwennie-chan - Tagifier
 function createTagMap() {
@@ -905,13 +1094,19 @@ function forumTagger() {
     });
 }
 
-function tagifierCSS() {
-    $('<style>').prop('type', 'text/css').html('\.tagified:hover{text-decoration:underline !important;color:#990000 !important;}\#controller{text-align:center;font-size:0.75em;font-weight:normal;}\#controller input{margin: 10px 20px;display:inline-block;}').prependTo('head');
-}
-
-function tagSelectionSwitcher() {
-    //console.log("Starting TCC");
-    $('#main h2').html('<h2>Suggestions Status</h2><div id="controller"><input type="checkbox" id="acceptedCont" checked><span class="text-success">Accepted</span></input><input type="checkbox" id="pendingCont" checked><span class="text-info">Pending</span></input><input type="checkbox" id="rejectedCont" checked><span class="text-error">Rejected</span></input></div>');
+function tssUI(set) {
+    if (cURL.match(/user\/suggestions/)) {
+        if (set === true){
+            $(`<div id="tss-bar">
+                <input type="checkbox" id="acceptedCont" checked><span class="text-success">Accepted</span></input>
+                <input type="checkbox" id="pendingCont" checked><span class="text-info">Pending</span></input>
+                <input type="checkbox" id="rejectedCont" checked><span class="text-error">Rejected</span></input>
+        </div>`).appendTo("#main h2");
+        }
+        else if (set === false) {
+            $('#tss-bar').slideUp().remove();
+        }
+    }
 }
 
 function statsShortener() {
