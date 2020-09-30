@@ -160,7 +160,7 @@ function initUI() {
     $('body').append(`
         <div id="sc-mag-bar" class="unselectable">
             <li><button type="button" id="thingifier-magnifier-settings-button" title="Click to OPEN Magnifier Settings"><span class="sc-icon">&#9881;</span><span class="sc-label">Open Settings</span></button></li>
-            <li><button type="button" id="thingifier-magnifier-control" title="Click or Press 'Z' To ENABLE Magnifier"><span class="sc-icon">&#128505;</span><span class="sc-label">Turn On</span></button></li>
+            <li><button type="button" id="thingifier-magnifier-control" title="Click or Press 'Z' To ENABLE Magnifier"><span class="sc-icon">&#9745;</span><span class="sc-label">Turn On</span></button></li>
             <b title="Script-chan Magnifier">&#128269;</b>
         </div>
         <div id="thingifier-magnifier-settings-menu">
@@ -177,8 +177,7 @@ function initUI() {
 
 function appendUIcss() {
     $('head').append('<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> ');
-    $('head').append(`
-<style media="screen" type="text/css">
+    $('head').append(`<style media="screen" type="text/css">
     .unselectable {
         user-select: none;
         -moz-user-select: none;
@@ -297,8 +296,14 @@ function appendUIcss() {
         display: inline-block;
     }
     #scmenu li {padding: 0px 10px;}
-    #sc-mag-bar li {padding: 0px; margin-left: 5px;}
-    #sc-mag-bar li .sc-icon {margin-right: 3px}
+    #sc-mag-bar li {
+        padding: 0px;
+        margin-left: 5px;
+    }
+    #sc-mag-bar li .sc-icon {
+        margin-right: 3px;
+        font-family: 'Noto Emoji';
+    }
     #scmenu input[type=checkbox] {
         margin: 5px;
         cursor: pointer;
@@ -349,7 +354,7 @@ function appendUIcss() {
         display: inline-block;
         font-variant:small-caps;
         font-size: 12px;
-        border-radius: 12px;
+        border-radius: 16px;
         margin: 10px;
     }
     #mangadex-tool h2 {
@@ -883,12 +888,12 @@ $('#thingifier-mousewheel').click(function () {
 $('#thingifier-magnifier-control').click(function () {
     if ($(this).data('clicked') == false || $(this).data('clicked') == null) {
         $(this).data('clicked', true);
-        $('#thingifier-magnifier-control .sc-icon').html('&#128503;');
+        $('#thingifier-magnifier-control .sc-icon').html('&#9746;');
         $('#thingifier-magnifier-control .sc-label').html('Turn Off');
         $(this).prop('title', 'Click or Press ALT+\'Z\' To DISABLE Magnifier');
     } else if ($(this).data('clicked') == true) {
         $(this).data('clicked', false);
-        $('#thingifier-magnifier-control .sc-icon').html('&#128505;');
+        $('#thingifier-magnifier-control .sc-icon').html('&#9745;');
         $('#thingifier-magnifier-control .sc-label').html('Turn On');
         $(this).prop('title', 'Click or Press ALT+\'Z\' To ENABLE Magnifier');
     }
@@ -896,7 +901,7 @@ $('#thingifier-magnifier-control').click(function () {
 $('#thingifier-magnifier-settings-button').click(function () {
     if ($(this).data('clicked') == false || $(this).data('clicked') == null) {
         $(this).data('clicked', true);
-        $('#thingifier-magnifier-settings-button .sc-icon').html('&#128446;');
+        $('#thingifier-magnifier-settings-button .sc-icon').html('&#8690;');
         $('#thingifier-magnifier-settings-button .sc-label').html('Close Settings');
         $(this).prop('title', 'Click to CLOSE Magnifier Settings');
         $('#thingifier-magnifier-settings-menu').slideDown();
@@ -991,21 +996,18 @@ function mangadex(set) {
                 select = '.tag-title';
             }
 
-            $(`<div id="mangadex-tool" style="display: none">
-                    <h2>Mangadex Search Tool:</h2>
-                    <a id="mangadex-title" href="https://mangadex.org/search?title=${title}">Title</a>
-               </div>`).appendTo(select);
+            $(`<div id="mangadex-tool" style="display: none"><h2>Mangadex Search Tool:</h2><a id="mangadex-title" href="https://mangadex.org/search?title=${title}">Title</a></div>`).appendTo(select);
 
             if(Array.isArray(authors)) {
                 for (let i = 0; i < authors.length; i++) {
                     $(`<a class="md-author" href="https://mangadex.org/search?author=${authors[i]}">Author ${i+1}<small>(${authors[i]})</small></a>`).appendTo('#mangadex-tool');
                 }
             }
-            else {
+            else if (typeof authors === "string") {
                 $(`<a class="md-author" href="https://mangadex.org/search?author=${authors}">Author<small>(${authors})</small></a>`).appendTo('#mangadex-tool');
             }
 
-            $('#mangadex-tool').show();
+            $('#mangadex-tool').slideDown('slow','linear');
         }
         else if (set === false) {
             $('#mangadex-tool').slideUp('slow','linear',function(){$(this).remove();});
@@ -1031,6 +1033,9 @@ function getWorkInfo(what) {
                 tempArray.push($(this).text());
             });
             return tempArray;
+        }
+        else {
+            return null;
         }
     }
 
@@ -1063,11 +1068,11 @@ function getWorkInfo(what) {
     }
     else if (cURL.match(/issues/)) {
         if(what === "title") {return getTitle();}
-        if(what === "author") {return null;}
+        if(what === "author") {return getTItle();}
     }
     else if (cURL.match(/anthologies/)) {
         if(what === "title") {return getTitle();}
-        if(what === "author") {return null;}
+        if(what === "author") {return getAuthors();}
     }
 }
 
