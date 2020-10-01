@@ -510,8 +510,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'pagination' || what === 'all') {
         if (SC.pagination === false) {
             $('#thingifier-pagination').prop('checked', false);
+            paginate(false);
         } else if (SC.pagination === true) {
             $('#thingifier-pagination').prop('checked', true);
+            paginate(true);
         }
     }
     if (what === 'mark-read' || what === 'all') {
@@ -715,9 +717,11 @@ $('#thingifier-pagination').click(function () {
     if ($(this).prop('checked') === false) {
         SC.pagination = false;
         save();
+        paginate(false);
     } else if ($(this).prop('checked') === true) {
         SC.pagination = true;
         save();
+        paginate(true);
     }
 });
 $('#cyricc-mark-read').click(function () {
@@ -1226,5 +1230,17 @@ function fixNavBar(set) {
         $('.navbar').removeClass('navbar-fixed');
         $('div.forum_post').css("padding-top", 0);
         $('div.nav-padding').remove();
+    }
+}
+
+function paginate(set){
+    if (set === true) {
+        $('div.pagination').wrap(`<div class="tmp">`).parent().html();
+        let tmp = $('div.tmp').html();
+        $('div.pagination').unwrap();
+        $('#main').prepend(tmp);
+    }
+    else if (set === false) {
+        $('div.pagination:first').remove();
     }
 }

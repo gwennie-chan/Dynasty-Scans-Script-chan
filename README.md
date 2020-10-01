@@ -12,7 +12,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
 - [x] Implement LocalStorage For Setting Storage
 - [ ] Backend Coding
   - [x] Fixed Navbar
-  - [ ] Pagination
+  - [x] Pagination
   - [ ] Mark Read
   - [ ] Tag Hider
   - [ ] Unhide Spoilers
