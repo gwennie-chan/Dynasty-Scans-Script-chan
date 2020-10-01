@@ -28,7 +28,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
   - [x] SSP - Tag Selection Switcher
   - [x] Mangadex Searcher (Completely Rewritten)
   - [x] Browser Title Rethingifier
-  - [ ] Mousewheel Clicker
+  - [x] Mousewheel Clicker
 - [ ] Debugging, Cross-Browser and Beta Testing
 - [ ] Release First Stable Version
 
@@ -89,7 +89,7 @@ These tweaks provide minor cosmetic changes or obscure enhancements.
 #### Browser Title Rethingifier _(Alice)_
 > Reverses browser title format to list what work/page is being viewed first, instead of the website name.
 #### Mousewheel Click Support _(Alice)_
-> Adds functionality to left and right click mouseswheel to navigate through manga pages.
+> Adds ability to automatically click left or right through manga pages based on mousewheel scroll direction. (Up = Left, Down = Right)
   
 ## Installation :inbox_tray:
 Script-chan was built to run on [Tampermonkey](https://www.tampermonkey.net/), available as an extension to most major browsers including Chrome, Firefox, Safari, Opera Next, and Microsoft Edge.

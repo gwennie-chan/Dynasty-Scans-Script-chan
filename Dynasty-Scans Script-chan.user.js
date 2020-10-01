@@ -28,8 +28,8 @@ let postids = [];
 let quote = [];
 let postcount = 0;
 let counter = 0;
-let origStats = [[],[]];
-let origTags = [];
+const origStats = [[],[]];
+const origTags = [];
 let SCdefault = {
     navbar: false,
     pagination: false,
@@ -157,7 +157,6 @@ function initUI() {
                 <li><input type="checkbox" id="gc-tss"><label for="gc-tss" title="Creates Easy Filtering Utility Bar On 'Suggestions Status' Page">Suggestions Status Page Switcher</label></li>
                 <li><input type="checkbox" id="thingifier-mangadex"><label for="thingifier-mangadex" title="Adds Utility To Search For Work or Author on MangaDex">MangaDex Searcher</label></li>
                 <li><input type="checkbox" id="thingifier-rething"><label for="thingifier-rething" title="Reverses Browser Title To Show What Page First, Dynasty Last">Reverse Browser Page Title</label></li>
-                <li><input type="checkbox" id="thingifier-mousewheel"><label for="thingifier-mousewheel" title="Allows Clicking Through Manga With L/R Mousewheel Clicks">L/R Mousewheel Page Navigation</label></li>
     </div>`);
     $('body').append(`
         <div id="sc-mag-bar" class="unselectable">
@@ -682,8 +681,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'mousewheel' || what === 'all') {
         if (SC.mousewheel === false) {
             $('#thingifier-mousewheel').prop('checked', false);
+            mousewheel(false);
         } else if (SC.mousewheel === true) {
             $('#thingifier-mousewheel').prop('checked', true);
+            mousewheel(true);
         }
     }
 }
@@ -891,9 +892,11 @@ $('#thingifier-mousewheel').click(function () {
     if ($(this).prop('checked') === false) {
         SC.mousewheel = false;
         save();
+        mousewheel(false);
     } else if ($(this).prop('checked') === true) {
         SC.mousewheel = true;
         save();
+        mousewheel(true);
     }
 });
 
@@ -1176,4 +1179,27 @@ function numShorten(num) {
     if (num >= 10000) { return Math.round(num / 100) + 'K'; }
     if (num >= 1000) { return parseFloat(num / 1000).toFixed(2) + 'K'; }
     return num;
+}
+
+function mousewheel(set) {
+    if (set === true) {
+        document.body.addEventListener('wheel',setMouseEventListener);
+    }
+    else if (set === false) {
+        document.body.removeEventListener('wheel',setMouseEventListener);
+    }
+}
+s
+function setMouseEventListener(event) {
+    {
+        if (event.target.id === 'image' || event.target.classList.contains('left') || event.target.classList.contains('right') || event.target.parentNode.id === 'image') {
+            event.preventDefault();
+            if (event.deltaY < 0) {
+                $('.left').click();
+            }
+            else {
+                $('.right').click();
+            }
+        }
+    }
 }
