@@ -22,7 +22,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
   - [ ] Move Quick Reply
   - [x] Forum Tagger
   - [x] Stats Shortener
-  - [ ] Font Size
+  - [x] Font Size
   - [ ] Gallery Viewer
   - [ ] Magnifier
   - [x] SSP - Tag Selection Switcher

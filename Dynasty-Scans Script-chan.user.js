@@ -542,6 +542,7 @@ function settingsChecker(what, initial = false) {
         }
         $('#thingifier-font-size').prop('value', fontset(SC.fontsize, 'index'));
         $('#thingifier-font-size-value').html(`(${fontset(SC.fontsize, 'value')})`);
+        $('.message *').css({ 'font-size': `${fontset(SC.fontsize, 'value')}`, 'line-height': `${fontset(SC.fontsize, 'line')}`});
     }
     if (what === 'spoilers' || what === 'all') {
         if (SC.spoilers === false) {
@@ -759,7 +760,7 @@ $('#thingifier-reset-font').click(function () {
         SC.fontsize = SCdefault.fontsize;
         save();
         $('#thingifier-font-size').prop('value', '3');
-        $('#thingifier-font-size-value').html(`(${SC.fontsize}px)`);
+        $('#thingifier-font-size-value').html(`(${fontset(SC.fontsize, 'value')}px)`);
         $(this).prop('disabled', true);
         settingsChecker('fontsize');
     }
@@ -987,26 +988,37 @@ $('#rejectedCont').click(function() {
 
 //UI Helper Functions
 function fontset (set, type) {
-    if(type == "index") {
-        if(set == "smallest"){return 1;}
-        if (set == "smaller"){return 2;}
-        if (set == "normal"){return 3;}
-        if (set == "bigger"){return 4;}
-        if (set == "biggest"){return 5;}
+    if(type === 'index') {
+        set = String(set);
+        if (set === 'smallest'){return 1;}
+        if (set === 'smaller'){return 2;}
+        if (set === 'normal'){return 3;}
+        if (set === 'bigger'){return 4;}
+        if (set === 'biggest'){return 5;}
     }
-    if (type == "value") {
-        if(set == "smallest" || set === 1){return SC.fontset.smallest.fs;}
-        if (set == "smaller" || set === 2){return SC.fontset.smaller.fs;}
-        if (set == "normal" || set === 3){return SC.fontset.normal.fs;}
-        if (set == "bigger" || set === 4){return SC.fontset.bigger.fs;}
-        if (set == "biggest" || set === 5){return SC.fontset.biggest.fs;}
+    if (type === 'value') {
+        let set1 = String(set), set2 = parseInt(set);
+        if(set1 === 'smallest' || set2 === 1){return SC.fontset.smallest.fs;}
+        if (set1 === 'smaller' || set2 === 2){return SC.fontset.smaller.fs;}
+        if (set1 === 'normal' || set2 === 3){return SC.fontset.normal.fs;}
+        if (set1 === 'bigger' || set2 === 4){return SC.fontset.bigger.fs;}
+        if (set1 === 'biggest' || set2 === 5){return SC.fontset.biggest.fs;}
     }
-    if (type == "name") {
-        if(set == 1){return "smallest";}
-        if (set == 2){return "smaller";}
-        if (set == 3){return "normal";}
-        else if (set == 4){return "bigger";}
-        else if (set == 5){return "biggest";}
+    if (type === 'line') {
+        let set1 = String(set), set2 = parseInt(set);
+        if (set1 === 'smallest' || set2 === 1){return SC.fontset.smallest.lh;}
+        if (set1 === 'smaller' || set2 === 2){return SC.fontset.smaller.lh;}
+        if (set1 === 'normal' || set2 === 3){return SC.fontset.normal.lh;}
+        if (set1 === 'bigger' || set2 === 4){return SC.fontset.bigger.lh;}
+        if (set1 === 'biggest' || set2 === 5){return SC.fontset.biggest.lh;}
+    }
+    if (type === 'name') {
+        set = parseInt(set);
+        if(set === 1){return 'smallest';}
+        if (set === 2){return 'smaller';}
+        if (set === 3){return 'normal';}
+        else if (set === 4){return 'bigger';}
+        else if (set === 5){return 'biggest';}
     }
 }
 
