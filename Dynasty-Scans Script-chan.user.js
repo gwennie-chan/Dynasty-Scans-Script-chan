@@ -29,6 +29,7 @@ let quote = [];
 let postcount = 0;
 let counter = 0;
 let origStats = [[],[]];
+let origTags = [];
 let SCdefault = {
     navbar: false,
     pagination: false,
@@ -43,7 +44,7 @@ let SCdefault = {
         biggest: { fs: '25px', lh: '28px' },
     },
     spoilers: false,
-    yourid: 'Not set!',
+    yourid: false,
     bbcode: false,
     quote2quickreply: false,
     movequickreply: false,
@@ -334,9 +335,13 @@ function appendUIcss() {
     #scmenu input[type=range] {
         max-width: 95px;
     }
-    .tagified:hover {
-        text-decoration:underline;
-        color:#990000;
+    #main code a.tagified {
+        text-decoration: none;
+        color: #990000;
+    }
+    #main code a.tagified:hover {
+        text-decoration: underline;
+        color: #990000;
     }
     #tss-bar {
         text-align:center;
@@ -531,18 +536,18 @@ function settingsChecker(what, initial = false) {
         }
     }
     if (what === 'yourid' || what === 'all') {
-        if (SC.yourid === 'Not set!' && cURL.match(/forum\/topics/)) {
-            let tmpid = 0;
+        if (SC.yourid === false && cURL.match(/forum\/topics\/.*/)) {
+            let tmpid = null;
             $('.forum_post').each(function () {
                 let postUser = $(this).find('.user').text().trim();
                 //console.log(username,postUser);
                 if (postUser === username) {
                     //console.log("User ID Found On Page, Returning ID Value");
-                    tmpid = $(this).find('.count a').attr('href').replace(/\D+/g, '');
+                    tmpid = parseInt($(this).find('.count a').attr('href').replace(/\D+/g, ''));
                 }
             });
             //console.log(tmpid);
-            if (tmpid.match(/\d+/)) {
+            if (typeof tmpid === 'number') {
                 SC.yourid = tmpid;
                 save();
                 $('#thingifier-ownposts').prop('disabled', false);
@@ -552,10 +557,10 @@ function settingsChecker(what, initial = false) {
                 $('#thingifier-ownposts').prop('disabled', true);
                 $('#thingifier-ownposts').prop('title', "Navigate While Logged In To A Forum Page You've Posted On To Automatically Set Your User ID");
             }
-        } else if (SC.yourid === 'Not set!' && !cURL.match(/forum\/topics/)) {
+        } else if (SC.yourid === false && !cURL.match(/forum\/topics/)) {
             $('#thingifier-ownposts').prop('disabled', true);
             $('#thingifier-ownposts').prop('title', "Navigate While Logged In To A Forum Page You've Posted On To Automatically Set Your User ID");
-        } else if (SC.yourid.match(/\d+/)) {
+        } else if (typeof SC.yourid === 'number') {
             $('#thingifier-ownposts').prop('disabled', false);
             $('#thingifier-ownposts').prop('title', 'Click To See Your Forum Posts Page');
             $('#ownposts-link').attr('href', '//dynasty-scans.com/forum/posts?user_id=' + SC.yourid);
@@ -587,8 +592,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'forumtagger' || what === 'all') {
         if (SC.forumtagger === false) {
             $('#gc-forum-tagger').prop('checked', false);
+            forumTagger(false);
         } else if (SC.forumtagger === true) {
             $('#gc-forum-tagger').prop('checked', true);
+            forumTagger(true);
         }
     }
     if (what === 'statsshortener' || what === 'all') {
@@ -774,9 +781,11 @@ $('#gc-forum-tagger').click(function () {
     if ($(this).prop('checked') === false) {
         SC.forumtagger = false;
         save();
+        forumTagger(false);
     } else if ($(this).prop('checked') === true) {
         SC.forumtagger = true;
         save();
+        forumTagger(true);
     }
 });
 $('#gc-stats-shortener').click(function () {
@@ -1001,15 +1010,15 @@ function mangadex(set) {
                 select = '.tag-title';
             }
 
-            $(`<div id="mangadex-tool" style="display: none"><h2>Mangadex Search Tool:</h2><a id="mangadex-title" href="https://mangadex.org/search?title=${title}">Title</a></div>`).appendTo(select);
+            $(`<div id="mangadex-tool" style="display: none"><h2>Mangadex Search Tool:</h2><a id="mangadex-title" target="_blank" href="https://mangadex.org/search?title=${title}">Title</a></div>`).appendTo(select);
 
             if(Array.isArray(authors)) {
                 for (let i = 0; i < authors.length; i++) {
-                    $(`<a class="md-author" href="https://mangadex.org/search?author=${authors[i]}">Author ${i+1}<small>(${authors[i]})</small></a>`).appendTo('#mangadex-tool');
+                    $(`<a class="md-author" target="_blank" href="https://mangadex.org/search?author=${authors[i]}">Author ${i+1}<small>(${authors[i]})</small></a>`).appendTo('#mangadex-tool');
                 }
             }
             else if (typeof authors === "string") {
-                $(`<a class="md-author" href="https://mangadex.org/search?author=${authors}">Author<small>(${authors})</small></a>`).appendTo('#mangadex-tool');
+                $(`<a class="md-author" target="_blank" href="https://mangadex.org/search?author=${authors}">Author<small>(${authors})</small></a>`).appendTo('#mangadex-tool');
             }
 
             $('#mangadex-tool').slideDown('slow','linear');
@@ -1082,7 +1091,7 @@ function getWorkInfo(what) {
 }
 
 
-//gwennie-chan - Tagifier
+//gwennie-chan and cyricc - Forum Tagifier
 function createTagMap() {
     return $.getJSON(tagsJSON).then((data) => {
         const tagMap = {};
@@ -1091,17 +1100,28 @@ function createTagMap() {
     });
 }
 
-function forumTagger() {
-    createTagMap().then((tagMap) => {
-        $('code').each(function () {
-            // Lookup the tag table and linkify if key exists
-            let lowerHTML = this.innerHTML.toLowerCase();
-            if (tagMap.hasOwnProperty(lowerHTML)) {
-                let nameLink = tagMap[lowerHTML];
-                $(this).html(`<a href=${tagURLstub}${nameLink.permalink} class="tagified" style="text-decoration:none;color:inherit;">${nameLink.name}</a>`);
-            }
-        });
-    });
+function forumTagger(set) {
+    if (cURL.match(/(forum\/topics\/|images\/).*/)) {
+        if (set === true) {
+            createTagMap().then((tagMap) => {
+                $('code').each(function () {
+                    // Lookup the tag table and linkify if key exists
+                    origTags.push($(this).text());
+                    let lowerHTML = this.innerHTML.toLowerCase();
+                    if (tagMap.hasOwnProperty(lowerHTML)) {
+                        let nameLink = tagMap[lowerHTML];
+                        $(this).html(`<a href=${tagURLstub}${nameLink.permalink} target="_blank" class="tagified">${nameLink.name}</a>`);
+                    }
+                });
+            });
+            //console.log(origTags);
+        }
+        else if (set === false){
+            $('code').each(function(i){
+                $(this).html(origTags[i]);
+            });
+        }
+    }
 }
 
 function tssUI(set) {

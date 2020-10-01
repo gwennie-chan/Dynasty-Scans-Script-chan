@@ -20,7 +20,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
   - [ ] Quick Reply Editor
   - [ ] Quote to Quick Reply
   - [ ] Move Quick Reply
-  - [ ] Forum Tagger
+  - [x] Forum Tagger
   - [x] Stats Shortener
   - [ ] Font Size
   - [ ] Gallery Viewer
