@@ -157,6 +157,7 @@ function initUI() {
                 <li><input type="checkbox" id="gc-tss"><label for="gc-tss" title="Creates Easy Filtering Utility Bar On 'Suggestions Status' Page">Suggestions Status Page Switcher</label></li>
                 <li><input type="checkbox" id="thingifier-mangadex"><label for="thingifier-mangadex" title="Adds Utility To Search For Work or Author on MangaDex">MangaDex Searcher</label></li>
                 <li><input type="checkbox" id="thingifier-rething"><label for="thingifier-rething" title="Reverses Browser Title To Show What Page First, Dynasty Last">Reverse Browser Page Title</label></li>
+                <li><input type="checkbox" id="thingifier-mousewheel"><label for="thingifier-mousewheel" title="Allows Clicking Through Manga With L/R Mousewheel Clicks">L/R Mousewheel Page Navigation</label></li>
     </div>`);
     $('body').append(`
         <div id="sc-mag-bar" class="unselectable">
@@ -1179,7 +1180,7 @@ function tssUI(set) {
 }
 
 function statsShortener(set) {
-    if (cURL.match(/(forum)(?!topics).*/)) {
+    if (cURL.match(/(forum)(?!\/topics).*/)) {
         if(set === true) {
             $('.views_count b').each(function () {
                 let vCount = parseFloat(this.innerHTML.replace(/,/g, ''));
@@ -1194,7 +1195,7 @@ function statsShortener(set) {
                 origStats[1].push(pCount);
                 $(this).html(numShorten(pCount));
             });
-            console.log(origStats[1]);
+            //console.log(origStats[1]);
         }
         else if (set === false) {
             if (origStats[0].length > 0 && origStats[1].length > 0) {
