@@ -15,7 +15,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
   - [x] Pagination
   - [ ] Mark Read
   - [ ] Tag Hider
-  - [ ] Unhide Spoilers
+  - [x] Unhide Spoilers
   - [x] Your Posts
   - [ ] Quick Reply Editor
   - [ ] Quote to Quick Reply

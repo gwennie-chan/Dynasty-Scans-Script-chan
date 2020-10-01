@@ -401,6 +401,10 @@ function appendUIcss() {
         height: 60px;
         width: 1210px;
     }
+    .spoilers-disabled {
+    background: #666 none repeat scroll 0% 0%;
+    color: #fff;
+    }
 
     /*Range Styling from http://danielstern.ca/range.css/*/
     input[type=range] {
@@ -542,8 +546,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'spoilers' || what === 'all') {
         if (SC.spoilers === false) {
             $('#thingifier-unhide-spoilers').prop('checked', false);
+            unhideSpoilers(false);
         } else if (SC.spoilers === true) {
             $('#thingifier-unhide-spoilers').prop('checked', true);
+            unhideSpoilers(true);
         }
     }
     if (what === 'yourid' || what === 'all') {
@@ -762,9 +768,11 @@ $('#thingifier-unhide-spoilers').click(function () {
     if ($(this).prop('checked') === false) {
         SC.spoilers = false;
         save();
+        unhideSpoilers(false);
     } else if ($(this).prop('checked') === true) {
         SC.spoilers = true;
         save();
+        unhideSpoilers(true);
     }
 });
 $('#thingifier-bbcode-buttons').click(function () {
@@ -1242,5 +1250,14 @@ function paginate(set){
     }
     else if (set === false) {
         $('div.pagination:first').remove();
+    }
+}
+
+function unhideSpoilers(set) {
+    if (set === true) {
+        $('.spoilers').addClass('spoilers-disabled');
+    }
+    else if (set === false) {
+        $('.spoilers').removeClass('spoilers-disabled');
     }
 }
