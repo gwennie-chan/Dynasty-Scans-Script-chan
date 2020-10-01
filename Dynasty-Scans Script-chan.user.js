@@ -28,6 +28,7 @@ let postids = [];
 let quote = [];
 let postcount = 0;
 let counter = 0;
+let origStats = [[],[]];
 let SCdefault = {
     navbar: false,
     pagination: false,
@@ -593,8 +594,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'statsshortener' || what === 'all') {
         if (SC.statsshortener === false) {
             $('#gc-stats-shortener').prop('checked', false);
+            statsShortener(false);
         } else if (SC.statsshortener === true) {
             $('#gc-stats-shortener').prop('checked', true);
+            statsShortener(true);
         }
     }
     if (what === 'galleryviewer' || what === 'all') {
@@ -780,9 +783,11 @@ $('#gc-stats-shortener').click(function () {
     if ($(this).prop('checked') === false) {
         SC.statsshortener = false;
         save();
+        statsShortener(false);
     } else if ($(this).prop('checked') === true) {
         SC.statsshortener = true;
         save();
+        statsShortener(true);
     }
 });
 $('#cyricc-gallery-viewer').click(function () {
@@ -1114,17 +1119,35 @@ function tssUI(set) {
     }
 }
 
-function statsShortener() {
-    $('.views_count b').each(function () {
-        let vCount = parseFloat(this.innerHTML.replace(/,/g, ''));
-        //console.log("Converted View Count " + vCount);
-        $(this).html(numShorten(vCount));
-    });
-    $('.posts_count b').each(function () {
-        let vCount = parseFloat(this.innerHTML.replace(/,/g, ''));
-        //console.log("Converted View Count " + vCount);
-        $(this).html(numShorten(vCount));
-    });
+function statsShortener(set) {
+    if (cURL.match(/(forum)(?!topics).*/)) {
+        if(set === true) {
+            $('.views_count b').each(function () {
+                let vCount = parseFloat(this.innerHTML.replace(/,/g, ''));
+                //console.log("Converted View Count " + vCount);
+                origStats[0].push(vCount);
+                $(this).html(numShorten(vCount));
+            });
+            console.log(origStats[0]);
+            $('.posts_count b').each(function () {
+                let pCount = parseFloat(this.innerHTML.replace(/,/g, ''));
+                //console.log("Converted View Count " + vCount);
+                origStats[1].push(pCount);
+                $(this).html(numShorten(pCount));
+            });
+            console.log(origStats[1]);
+        }
+        else if (set === false) {
+            if (origStats[0].length > 0 && origStats[1].length > 0) {
+                $('.views_count b').each(function(i){
+                    $(this).html(origStats[0][i].toLocaleString('bestfit',{maximumFractionDigits:0}));
+                });
+                $('.posts_count b').each(function(i){
+                    $(this).html(origStats[1][i].toLocaleString('bestfit',{maximumFractionDigits:0}));
+                });
+            }
+        }
+    }
 }
 
 function numShorten(num) {

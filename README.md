@@ -21,7 +21,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
   - [ ] Quote to Quick Reply
   - [ ] Move Quick Reply
   - [ ] Forum Tagger
-  - [ ] Stats Shortener
+  - [x] Stats Shortener
   - [ ] Font Size
   - [ ] Gallery Viewer
   - [ ] Magnifier
