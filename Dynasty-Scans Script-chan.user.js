@@ -392,7 +392,15 @@ function appendUIcss() {
         color: grey;
         margin: 2px 0px 3px 4px
     }
-
+    .navbar-fixed {
+        position: fixed;
+        z-index: 1000;
+        width: 1210px;
+    }
+    .nav-padding {
+        height: 60px;
+        width: 1210px;
+    }
 
     /*Range Styling from http://danielstern.ca/range.css/*/
     input[type=range] {
@@ -493,8 +501,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'navbar' || what === 'all') {
         if (SC.navbar === false) {
             $('#thingifier-fixed-navbar').prop('checked', false);
+            fixNavBar(false);
         } else if (SC.navbar === true) {
             $('#thingifier-fixed-navbar').prop('checked', true);
+            fixNavBar(true);
         }
     }
     if (what === 'pagination' || what === 'all') {
@@ -694,9 +704,11 @@ $('#thingifier-fixed-navbar').click(function () {
     if ($(this).prop('checked') === false) {
         SC.navbar = false;
         save();
+        fixNavBar(false);
     } else if ($(this).prop('checked') === true) {
         SC.navbar = true;
         save();
+        fixNavBar(true);
     }
 });
 $('#thingifier-pagination').click(function () {
@@ -1189,7 +1201,7 @@ function mousewheel(set) {
         document.body.removeEventListener('wheel',setMouseEventListener);
     }
 }
-s
+
 function setMouseEventListener(event) {
     {
         if (event.target.id === 'image' || event.target.classList.contains('left') || event.target.classList.contains('right') || event.target.parentNode.id === 'image') {
@@ -1201,5 +1213,18 @@ function setMouseEventListener(event) {
                 $('.right').click();
             }
         }
+    }
+}
+
+function fixNavBar(set) {
+    if (set === true) {
+        $('.navbar').addClass('navbar-fixed');
+        $('div.forum_post').css('padding-top', 40);
+        $(`<div class="nav-padding"</div>`).insertAfter('.navbar');
+    }
+    else if (set === false) {
+        $('.navbar').removeClass('navbar-fixed');
+        $('div.forum_post').css("padding-top", 0);
+        $('div.nav-padding').remove();
     }
 }

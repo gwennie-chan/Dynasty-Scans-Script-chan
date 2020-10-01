@@ -11,7 +11,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
 - [x] Implement Basic UI Functionality
 - [x] Implement LocalStorage For Setting Storage
 - [ ] Backend Coding
-  - [ ] Fixed Navbar
+  - [x] Fixed Navbar
   - [ ] Pagination
   - [ ] Mark Read
   - [ ] Tag Hider
