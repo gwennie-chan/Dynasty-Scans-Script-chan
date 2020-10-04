@@ -30,6 +30,7 @@ let postcount = 0;
 let counter = 0;
 const origStats = [[],[]];
 const origTags = [];
+let ss, se, sel, tb, te, pt, sa = [];
 let SCdefault = {
     navbar: false,
     pagination: false,
@@ -150,7 +151,7 @@ function initUI() {
                 <li><input type="checkbox" id="gc-forum-tagger"><label for="gc-forum-tagger" title="Automatically Linkifies Valid Tags On Forum and Image Comments">Forum Tagger</label></li>
                 <li><input type="checkbox" id="gc-stats-shortener"><label for="gc-stats-shortener" title="Abbreviates Forum Directory Stats">Stats Shortner</label></li>
                 <li><span title="Changes Forum Font Size">Font Size&nbsp;&nbsp;</span><input type="range" id="thingifier-font-size" min="1" max="5"><span id="thingifier-font-size-value" style="padding:0px 5px">(00px)</span><button type="button" id="thingifier-reset-font" style="margin-left:10px" title="Resets Font Size Change"Mom>Reset</button></li>
-            <h4 title="For Being A Perverted Baka #Ironic #Cringe">Gallery Tweaks</h4>
+            <h4 title="For Being A Perverted Baka Oneesan">Gallery Tweaks</h4>
                 <li><input type="checkbox" id="cyricc-gallery-viewer"><label for="cyricc-gallery-viewer" title="Enables Easy, High-Res Gallery Viewing From Main Images Page">Gallery Viewer</label></li>
                 <li><input type="checkbox" id="thingifier-magnifier"><label for="thingifier" title="Magnifies Content On The Site">Magnifier</label></li>
             <h4 title="For Obscure Shit">Misc. Tweaks</h4>
@@ -167,10 +168,10 @@ function initUI() {
         </div>
         <div id="thingifier-magnifier-settings-menu">
             <h3>Magnifier Settings</h3>
-            <li><label for="sizenum">Size</label><input type="number" max="750" min="5" id="sizenum"><select id="sizemeasure" name="sizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px">px</option></select></li>
-            <li><label for="minsizenum">Min. Size</label><input type="number" max="750" min="5" id="minsizenum"><select id="minsizemeasure" name="minsizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px">px</option></select>
-            <li><label for="zoomfactor">Zoom Factor (%)</label><input type="number" id="zoomfactor" max="500" min="50" placeholder="Number As %"></li>
-            <li><label for="magnifier-shape">Mag. Shape</label><select id="magnifier-shape" name="magnifier-shape"><option value="circle">Circle</option><option value="square">Square</option></select></li>
+            <li><label for="sizenum" title="Sets Typical Magnifier Size">Size</label><input type="number" max="750" min="5" id="sizenum"><select id="sizemeasure" name="sizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px">px</option></select></li>
+            <li><label for="minsizenum" title="Sets Minimum Magnifier Size">Min. Size</label><input type="number" max="750" min="5" id="minsizenum"><select id="minsizemeasure" name="minsizemeasure" title="Select Size Measurement"><option value="vh">vh</option><option value="vw">vw</option><option value="vmin">vmin</option><option value="vmax">vmax</option><option value="%">%</option><option value="px">px</option></select>
+            <li><label for="zoomfactor" title="Sets Magnifier Zoom Strength">Zoom Factor (%)</label><input type="number" id="zoomfactor" max="500" min="50" placeholder="Number As %"></li>
+            <li><label for="magnifier-shape" title="Selects Shape Of Magnifier">Mag. Shape</label><select id="magnifier-shape" name="magnifier-shape"><option value="circle">Circle</option><option value="square">Square</option></select></li>
             <div id="magnifier-setting-buttons"><input type="button" id="magnifier-menu-default" value="Default"><input type="button" id="magnifier-menu-submit" value="Save"><input type="button" id="magnifier-menu-cancel" value="Cancel"></div>
         </div>
     `);
@@ -302,9 +303,8 @@ function appendUIcss() {
         padding: 0px;
         margin-left: 5px;
     }
-    #sc-mag-bar li .sc-icon {
+    #sc-mag-bar li .sc-icon, #thingifier-bbcode .sc-icon {
         margin-right: 3px;
-        font-family: 'Noto Emoji';
     }
     #scmenu input[type=checkbox] {
         margin: 5px;
@@ -318,17 +318,17 @@ function appendUIcss() {
         display: inherit;
         font-size: 13px;
     }
-    #scmenu button, #sc-mag-bar button {
+    #scmenu button, #sc-mag-bar button, #thingifier-bbcode a {
         border: none;
         background-color: white;
         border-radius: 7px;
         display: inline-block;
         font-variant: inherit;
     }
-    #scmenu button:hover, #sc-mag-bar button:hover {
+    #scmenu button:hover, #sc-mag-bar button:hover, #thingifier-bbcode a:hover {
         background-color: azure;
     }
-    #scmenu button:disabled, #sc-mag-bar button:disabled {
+    #scmenu button:disabled, #sc-mag-bar button:disabled, #thingifier-bbcode button:disabled {
         cursor:not-allowed;
         background-color:lightgrey;
     }
@@ -355,13 +355,13 @@ function appendUIcss() {
     #mangadex-tool {
         background-color:rgba(0, 51, 102, 0.9);
         border:2px solid rgb(0,51,102);
-        box-shadow: 1px 1px 8px rgb(0,51,102);
         color:white;
         display: inline-block;
         font-variant:small-caps;
         font-size: 12px;
-        border-radius: 16px;
+        border-radius: 20px;
         margin: 10px;
+        padding: 1px 4px;
     }
     #mangadex-tool h2 {
         display: inline-block;
@@ -405,6 +405,33 @@ function appendUIcss() {
     .spoilers-disabled {
     background: #666 none repeat scroll 0% 0%;
     color: #fff;
+    }
+    #thingifier-bbcode {
+        margin: 6px;
+        background-color:rgba(0, 51, 102, 0.8);
+        padding: 6px;
+        border-radius: 12px;
+        border:2px solid rgb(0,51,102);
+        min-width: 565px;
+    }
+    #thingifier-bbcode a {
+        margin: 3px 1px;
+        font-variant: small-caps;
+        text-decoration: none;
+        list-style-type: none;
+        padding: 1px 6px;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    #thingifier-bbcode-clear:hover {
+        background-color:salmon !important;
+        color:black !important;
+    }
+    #forum_post_message {
+        min-width: 98%;
+        max-width: 125%;
+        min-height: 100px;
+        max-height: 400px;
     }
 
     /*Range Styling from http://danielstern.ca/range.css/*/
@@ -590,8 +617,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'bbcode' || what === 'all') {
         if (SC.bbcode === false) {
             $('#thingifier-bbcode-buttons').prop('checked', false);
+            injectBBeditor(false);
         } else if (SC.bbcode === true) {
             $('#thingifier-bbcode-buttons').prop('checked', true);
+            injectBBeditor(true);
         }
     }
     if (what === 'quote2quickreply' || what === 'all') {
@@ -781,9 +810,11 @@ $('#thingifier-bbcode-buttons').click(function () {
     if ($(this).prop('checked') === false) {
         SC.bbcode = false;
         save();
+        injectBBeditor(false);
     } else if ($(this).prop('checked') === true) {
         SC.bbcode = true;
         save();
+        injectBBeditor(true);
     }
 });
 $('#thingifier-quote-to-quickreply').click(function () {
@@ -985,6 +1016,8 @@ $('#rejectedCont').click(function() {
     else {
         $('.suggestion-rejected').fadeOut();
     }});
+
+//BBCode Editor Controllers
 
 
 //UI Helper Functions
@@ -1273,4 +1306,222 @@ function unhideSpoilers(set) {
     else if (set === false) {
         $('.spoilers').removeClass('spoilers-disabled');
     }
+}
+
+function injectBBeditor (set) {
+    if (cURL.match(/(forum\/(topics\/.+|posts))|(images\/\d+)/)) {
+        if (set == true) {
+            $(`<div id="thingifier-bbcode" style="display:none">
+<a id="thingifier-bbcode-bold" style="font-weight:bold">Bold</a>
+<a id="thingifier-bbcode-italics" style="font-style: italic">Italics</a>
+<a id="thingifier-bbcode-spoiler" style="color:#FFF;background-color:#000;border:1px solid #FFF">Spoiler</a>
+<a id="thingifier-bbcode-quote">Quote</a>
+<a id="thingifier-bbcode-link">Link</a>
+<a id="thingifier-bbcode-image">Image</a>
+<a id="thingifier-bbcode-ul">Bullet List</a>
+<a id="thingifier-bbcode-ol">Numbered List</a>
+<a id="thingifier-bbcode-hr">Horizontal Line</a>
+<a id="thingifier-bbcode-tag" style="font-family: monospace;color:#990000;font-weight:bold;text-transform:uppercase;position:relative;bottom:1px;">Tags</a>
+<a id="thingifier-bbcode-codeblock" style="font-family: monospace; color:#555; font-weight:bold; font-size:15px; text-transform:uppercase; position:relative; bottom:1px;">Code Block</a>
+<a id="thingifier-bbcode-h1" style="font-weight:bold">H1</a>
+<a id="thingifier-bbcode-h2" style="font-weight:bold">H2</a>
+<a id="thingifier-bbcode-h3" style="font-weight:bold">H3</a>
+<a id="thingifier-bbcode-h4" style="font-weight:bold">H4</a>
+<a id="thingifier-bbcode-h5" style="font-weight:bold">H5</a>
+<a id="thingifier-bbcode-h6" style="font-weight:bold">H6</a>
+<a id="thingifier-bbcode-clear" style="font-weight:bold;float:right;color:darkred;border:2px solid darkred;">CLEAR ALL FORMATTING</a>
+</div>`).prependTo($('.forum_post_message .controls')).slideDown('slow','linear');
+        }
+        else if (set == false) {
+            $('#thingifier-bbcode').slideUp('slow','linear').done(function(){$(this).remove();});
+        }
+    }
+}
+
+$('#forum_post_message').click(function(){
+    if (typeof this.value === 'string' && this.value.length > 0) {
+        ss = this.selectionStart;
+        se = this.selectionEnd;
+        sel = this.value.substring(ss,se);
+        tb = this.value.substring(0, ss);
+        te = this.value.substring(se);
+        console.log({tb, ss, sel, se, te});
+    }
+});
+
+$('#forum_post_message').keyUp(function(){
+    if (typeof this.value === 'string' && this.value.length > 0) {
+        ss = this.selectionStart;
+        se = this.selectionEnd;
+        sel = this.value.substring(ss,se);
+        tb = this.value.substring(0, ss);
+        te = this.value.substring(se);
+        console.log({tb, ss, sel, se, te});
+    }
+});
+
+$('body').click(function(evt){
+    if(evt.target.id === 'new_forum_post'){
+        //console.log('Selection Preserved');
+        return;
+    }
+    else if ($(evt.target).closest('#new_forum_post').length) {
+        //console.log('Selection Preserved');
+        return;
+    }
+    else {
+        //console.log('Selection Wiped');
+        ss = se = sel = tb = te = pt = null;
+    }
+});
+
+$('#thingifier-bbcode a').click(function(){
+    let type = this.id.substring(18);
+    //console.log(type);
+    //console.log({tb, ss, sel, se, te});
+    if(typeof ss === 'number' && typeof se === 'number' && typeof sel === 'string' && typeof tb === 'string' && typeof te === 'string' && type !== 'clear') {
+        formatSelection(type);
+    }
+    else if (type !== 'clear') {
+        formatSelection(type,true);
+    }
+    else if (type === 'clear') {
+        undoFormatting();
+    }
+});
+
+function formatSelection(type,nosel = false){
+    let fpmv = document.getElementById('forum_post_message').value;
+    let fpm = $('#forum_post_message');
+    if (ss === se && typeof ss === 'number' && typeof se === 'number') {
+        sel = `<${type} text here>`;
+    }
+    if(nosel === true){
+        ss = 0;
+        se = fpmv.length;
+        if(fpmv.length = 0){sel = '';}
+        else {sel = fpmv;}
+    }
+    if(tb === null || tb === undefined){ tb = ''; }
+    if(te === null || te === undefined){ te = ''; }
+    if(nosel === false){fpm.val(tb + format(sel,type) + te);}
+    else if (nosel === true){
+        let nl;
+        if(sel.length > 0){nl = `\n`;}
+        else{nl = '';}
+        fpm.val(`${sel}${nl}${format(`<${type} text here>`,type)}`);
+    }
+    ss = se = sel = tb = te = pt = null;
+}
+
+function checkForLines(v) {
+    if(typeof v === 'string'){
+        let tmp = v.split('\n');
+        //console.log(tmp);
+        if (tmp.length > 0){ sa = tmp;}
+        else {return false;}
+    }
+}
+
+function checkifURL(v,type = 'standard') {
+    if(type === 'standard') {
+        if(v.match(/((https?|ftps?):\/\/)?((.*\.)?.*\..*)/)) {return true;}
+        else {return false;}
+    }
+    else if (type === 'embed') {
+        if(v.match(/((https?|ftps?):\/\/)?((.*\.)?.*\..*)+(\.(png|jpg|jpeg|gif|bmp|tif|tiff))/)) {return true;}
+        else {return false;}
+    }
+}
+
+function formatType(v,type) {
+    switch(type) {
+        case 'bold':
+            return `**${v}**`;
+        case 'italics':
+            return `_${v}_`;
+        case 'spoiler':
+            return `==${v}==`;
+        case 'quote':
+            return `> ${v}`;
+        case 'link' :
+            if(checkifURL(v)){
+                return `[](${v})`;
+            }
+            else {
+                return `[<linktext>](<linkurl>)`;
+            }
+        case 'image':
+            if(checkifURL(v,'embed')) {
+                return `![](${v})`;
+            }
+            else {
+                return `![](<image embed url here>)`;
+            }
+        case 'ul':
+            return `* ${v}`;
+        case 'ol':
+            return `. ${v}`;
+        case 'hr':
+            return `${v} \n***`;
+        case 'tag':
+            return `\`${v}\``;
+        case 'codeblock':
+            return `     ${v}`;
+        case 'h1':
+            return `# ${v}`;
+        case 'h2':
+            return `## ${v}`;
+        case 'h3':
+            return `### ${v}`;
+        case 'h4':
+            return `#### ${v}`;
+        case 'h5':
+            return `##### ${v}`;
+        case 'h6':
+            return `###### ${v}`;
+    }
+}
+
+function format(v,type) {
+    let va = null;
+    checkForLines(v);
+    //console.log(sa);
+    if(sa.length > 1) {
+        //console.log('Format Var = Array');
+        for(let i = 0; i < sa.length; i++) {
+            //console.log('Index %d is \"%s\"',i,sa[i]);
+            if(i === 0) {
+                va = `${formatType(sa[i],type)}\n`;
+            }
+            else {
+                va += `${formatType(sa[i],type)}\n`;
+            }
+
+            console.log(`${type} formatting\n` + va);
+        }
+        return va;
+    }
+    else if(sa.length === 1) {
+        //console.log('Format Var = String');
+        //console.log({v,type,sa});
+        return formatType(sa[0],type);
+    }
+    else {
+        console.log('Format Var Undefined!!!!')
+        alert ('Script-chan Error: Undefined Selection Variable');
+        return v;
+    }
+}
+
+function undoFormatting() {
+    let pattern = /(\*{2,3}|\*{1} |_|`|={2}|> |!?\[|\]|(?<=\])\(|(?<=\(\b.*\b)\)|(?<=\n)\d\ | {4}|#{1,6})/g;
+    //console.log('Purging Formatting');
+    let pt = document.getElementById('forum_post_message').value;
+    //console.log(pattern.test(pt));
+    //console.log(pt);
+    pt = pt.replace(pattern,'');
+    //console.log(pt);
+    $('#forum_post_message').val(pt);
+    ss = se = sel = tb = te = pt = null;
 }

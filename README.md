@@ -17,7 +17,7 @@ Original scripts created by [Alice Cheshire](https://github.com/Alice-Cheshire),
   - [ ] Tag Hider
   - [x] Unhide Spoilers
   - [x] Your Posts
-  - [ ] Quick Reply Editor
+  - [x] Quick Reply Editor (Partially Rewritten)
   - [ ] Quote to Quick Reply
   - [ ] Move Quick Reply
   - [x] Forum Tagger
