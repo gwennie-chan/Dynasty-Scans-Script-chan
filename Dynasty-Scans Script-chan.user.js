@@ -1345,18 +1345,18 @@ $('#forum_post_message').click(function(){
         sel = this.value.substring(ss,se);
         tb = this.value.substring(0, ss);
         te = this.value.substring(se);
-        console.log({tb, ss, sel, se, te});
+        //console.log({tb, ss, sel, se, te});
     }
 });
 
-$('#forum_post_message').keyUp(function(){
+$('#forum_post_message').keyup(function(){
     if (typeof this.value === 'string' && this.value.length > 0) {
         ss = this.selectionStart;
         se = this.selectionEnd;
         sel = this.value.substring(ss,se);
         tb = this.value.substring(0, ss);
         te = this.value.substring(se);
-        console.log({tb, ss, sel, se, te});
+        //console.log({tb, ss, sel, se, te});
     }
 });
 
