@@ -24,6 +24,7 @@ const username = $('a[href="/user"] strong').text().trim();
 const cURL = window.location.toString().replace(/(#.+)/, '');
 const cURLpath = window.location.pathname;
 const originalTitle = document.title;
+const rethingTitle = document.title.replace(/Dynasty Reader »(.+)/, '$1 | Dynasty Reader');
 let postids = [];
 let quote = [];
 let postcount = 0;
@@ -723,8 +724,10 @@ function settingsChecker(what, initial = false) {
     if (what === 'rethingify' || what === 'all') {
         if (SC.rethingify === false) {
             $('#thingifier-rething').prop('checked', false);
+            rethingify(false);
         } else if (SC.rethingify === true) {
             $('#thingifier-rething').prop('checked', true);
+            rethingify(true);
         }
     }
     if (what === 'mousewheel' || what === 'all') {
@@ -1059,7 +1062,7 @@ function fontset (set, type) {
 //Alice Cheshire - Title Rethingifier
 function rethingify(set) {
     if (set === true){
-        document.title = document.title.replace(/Dynasty Reader »(.+)/, '$1 | Dynasty Reader');
+        document.title = rethingTitle;
     }
     else if (set === false) {
         document.title = originalTitle;
